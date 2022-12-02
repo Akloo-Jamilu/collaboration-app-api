@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('post_user', function (Blueprint $table) {
             $table->foreignId('user_id')->index();
-            $table->foreignId('user_id')->on('users')->references('id')->cascadeOnDelete();
+            $table->foreign('user_id')->on('users')->references('id')->cascadeOnDelete();
             $table->foreignId('post_id')->index();
-            $table->foreignId('post_id')->on('posts')->references('id')->cascadeOnDelete();
+            $table->foreign('post_id')->on('posts')->references('id')->cascadeOnDelete();
             $table->primary(['post_id', 'user_id']);
         });
     }
