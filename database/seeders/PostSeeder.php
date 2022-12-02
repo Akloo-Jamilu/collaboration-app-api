@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Comment;
 use App\Models\Post;
 use Database\Seeders\Traits\DisableForeignKeys;
 use Database\Seeders\Traits\TruncateTable;
@@ -20,7 +21,9 @@ class PostSeeder extends Seeder
     {
         $this->disableForeignKeys();
         $this->truncate('posts');
-        Post::factory(5)->create();
+        Post::factory(5)
+            ->has(Comment::factory(4), 'comments')
+            ->create();
         $this->enableForeignKeys();
     }
 }
