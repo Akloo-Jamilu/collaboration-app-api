@@ -24,6 +24,9 @@ class PostSeeder extends Seeder
         Post::factory(5)
             ->has(Comment::factory(4), 'comments')
             ->create();
+
+
+
         $this->enableForeignKeys();
     }
 }
