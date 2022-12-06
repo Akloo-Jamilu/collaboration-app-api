@@ -64,10 +64,20 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $post->update($request->only(['tittle', 'body']));
+        // $post->update($request->only(['tittle', 'body']));
         $updatePost = $post->update([
             'tittle' => $request->tittle ?? $post->tittle,
             'body' => $request->body ?? $post->body,
+        ]);
+        if (!$updatePost) {
+            return new JsonResponse([
+                'error' => [
+                    'Failed to update post'
+                ]
+            ], 400);
+        }
+        return new JsonResponse([
+            'data' => $post
         ]);
     }
 
