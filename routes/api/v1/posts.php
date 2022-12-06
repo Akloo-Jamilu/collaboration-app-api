@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/users', [UserController::class, 'index']);
-Route::get('/user/{user}', [UserController::class, 'show']);
-Route::post('/users', [UserController::class, 'store']);
-Route::patch('/users', [UserController::class, 'update']);
+Route::get('/posts', [PostController::class, 'index']);
+Route::get('/posts/{post}', [PostController::class, 'show']);
+Route::post('/posts', [PostController::class, 'store']);
+Route::patch('/posts', [PostController::class, 'update']);

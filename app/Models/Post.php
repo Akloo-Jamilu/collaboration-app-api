@@ -9,6 +9,10 @@ class Post extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'tittle', 'body'
+    ];
+
     protected $casts = [
         'body' => 'array'
     ];
