@@ -8,6 +8,7 @@ use \Illuminate\Http\JsonResponse;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
+use App\Repositories\PostRepository;
 use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
@@ -19,7 +20,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::query()->get();
+        $posts = Post::query()->paginate(20);
 
         return PostResource::collection($posts);
     }
@@ -30,19 +31,13 @@ class PostController extends Controller
      * @param  \App\Http\Requests\StorePostRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePostRequest $request)
+    public function store(StorePostRequest $request, PostRepository $repository)
     {
-        $createPost = DB::transaction(function () use ($request) {
-            $createPost = Post::query()->create([
-                'tittle' => $request->tittle,
-                'body' => $request->body,
-            ]);
-            if ($userIds = $request->user_ids) {
-                $createPost->users()->sync($userIds);
-            }
-            return $createPost;
-        });
-
+        $createPost = $repository->create($request->only([
+            'tittle',
+            'body',
+            'user_ids'
+        ]));
         return new PostResource($createPost);
     }
 
