@@ -9,6 +9,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Repositories\PostRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
@@ -31,10 +32,10 @@ class PostController extends Controller
      * @param  \App\Http\Requests\StorePostRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePostRequest $request, PostRepository $repository)
+    public function store(Request $request, PostRepository $repository)
     {
         $createPost = $repository->create($request->only([
-            'tittle',
+            'title',
             'body',
             'user_ids'
         ]));
@@ -59,11 +60,11 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return ResourceCollection
      */
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(Request $request, Post $post)
     {
         // $post->update($request->only(['tittle', 'body']));
         $updatePost = $post->update([
-            'tittle' => $request->tittle ?? $post->tittle,
+            'title' => $request->title ?? $post->title,
             'body' => $request->body ?? $post->body,
         ]);
         if (!$updatePost) {

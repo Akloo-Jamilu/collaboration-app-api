@@ -10,7 +10,7 @@ class Post extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tittle', 'body'
+        'title', 'body'
     ];
 
     protected $casts = [

@@ -11,7 +11,7 @@ class PostRepository
     {
         $createPost = DB::transaction(function () use ($attributes) {
             $createPost = Post::query()->create([
-                'tittle' => data_get($attributes, 'tittle', 'Untitle'),
+                'title' => data_get($attributes, 'title', 'Untitle'),
                 'body' =>  data_get($attributes, 'body'),
             ]);
             if ($userIds =  data_get($attributes, 'user_ids')) {
