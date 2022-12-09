@@ -24,6 +24,7 @@ class PostController extends Controller
         $posts = Post::query()->paginate(20);
 
         return PostResource::collection($posts);
+        // return PostResource::collection($posts);
     }
 
     /**
