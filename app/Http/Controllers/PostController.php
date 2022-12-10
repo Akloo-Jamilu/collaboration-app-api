@@ -30,7 +30,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorePostRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, PostRepository $repository)
@@ -57,25 +57,20 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatePostRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Post  $post
      * @return ResourceCollection
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, Post $post, PostRepository $repository)
     {
         // $post->update($request->only(['tittle', 'body']));
-        $updatePost = $post->update([
-            'title' => $request->title ?? $post->title,
-            'body' => $request->body ?? $post->body,
-        ]);
-        if (!$updatePost) {
-            return new JsonResponse([
-                'error' => [
-                    'Failed to update post'
-                ]
-            ], 400);
-        }
-        return new PostResource($post);
+
+        $updatePost = $repository->update($post, $request->only([
+            'title',
+            'body',
+            'user_ids'
+        ]));
+        return new PostResource($updatePost);
     }
 
     /**
@@ -84,16 +79,10 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return ResourceCollection
      */
-    public function destroy(Post $post)
+    public function destroy(Post $post, PostRepository $repository)
     {
-        $deletePost = $post->forceDelete();
-        if (!$deletePost) {
-            return new JsonResponse([
-                'error' => [
-                    'Failed to delete post'
-                ]
-            ], 400);
-        }
+        $deletePost = $repository->forceDelete($post);
+
         return new JsonResponse([
             'data' => 'success'
         ]);

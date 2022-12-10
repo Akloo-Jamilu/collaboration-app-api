@@ -5,11 +5,11 @@ namespace App\Repositories;
 use App\Models\Post;
 use Illuminate\Support\Facades\DB;
 
-class PostRepository
+class PostRepository extends BaseRepository
 {
     public function create(array $attributes)
     {
-        $createPost = DB::transaction(function () use ($attributes) {
+        return DB::transaction(function () use ($attributes) {
             $createPost = Post::query()->create([
                 'title' => data_get($attributes, 'title', 'Untitle'),
                 'body' =>  data_get($attributes, 'body'),
@@ -21,11 +21,35 @@ class PostRepository
         });
     }
 
-    public function update()
+    public function update($post, array $attributes)
     {
-    }
+        return DB::transaction(function () use ($post, $attributes) {
+            $updatePost = $post->update([
+                'title' => data_get($attributes, 'title', $post->title),
+                'body' =>  data_get($attributes, 'body', $post->body),
+            ]);
 
-    public function forceDelete()
+            if (!$updatePost) {
+                throw new \Exception('failed post');
+            }
+
+            if ($userIds =  data_get($attributes, 'user_ids')) {
+                $post->users()->sync($userIds);
+            }
+
+            return $post;
+        });
+    }
+    public function forceDelete($post)
     {
+        return DB::transaction(function () use ($post) {
+            $deletePost = $post->forceDelete();
+
+            if (!$deletePost) {
+                throw new \Exception('failed to delete');
+            }
+
+            return $deletePost;
+        });
     }
 }
