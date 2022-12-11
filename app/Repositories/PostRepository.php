@@ -16,6 +16,8 @@ class PostRepository extends BaseRepository
             ]);
             if ($userIds =  data_get($attributes, 'user_ids')) {
                 $createPost->users()->sync($userIds);
+                // $createPost->users()->sync($userIds);
+                // $createPost->users()->sync($userIds);
             }
             return $createPost;
         });
