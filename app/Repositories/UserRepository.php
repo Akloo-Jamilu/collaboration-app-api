@@ -1,57 +1,66 @@
 <?php
 
+
 namespace App\Repositories;
 
+
+use App\Events\Models\User\UserCreated;
+use App\Events\Models\User\UserDeleted;
+use App\Events\Models\User\UserUpdated;
 use App\Exceptions\GeneralJsonException;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
-class PostRepository extends BaseRepository
+class UserRepository extends BaseRepository
 {
+
     public function create(array $attributes)
     {
         return DB::transaction(function () use ($attributes) {
+
             $createUser = User::query()->create([
-                'name' => data_get($attributes, 'name'),
-                'email' =>  data_get($attributes, 'email'),
+                'name'  => data_get($attributes, 'name'),
+                'email' => data_get($attributes, 'email'),
+                'password' => Hash::make(data_get($attributes, 'password')),
             ]);
-
-            throw_if(!$createUser, GeneralJsonException::class, 'Failed to create user.');
-
-            if ($userIds =  data_get($attributes, 'user_ids')) {
-                $createPost->users()->sync($userIds);
-            }
-            return $createPost;
+            throw_if(!$createUser, GeneralJsonException::class, 'Failed to create model.');
+            event(new UserCreated($createUser));
+            return $createUser;
         });
     }
 
-
-
-    public function update($post, array $attributes)
+    /**
+     * @param User $user
+     * @param array $attributes
+     * @return mixed
+     */
+    public function update($user, array $attributes)
     {
-        return DB::transaction(function () use ($post, $attributes) {
-            $updatePost = $post->update([
-                'title' => data_get($attributes, 'title', $post->title),
-                'body' =>  data_get($attributes, 'body', $post->body),
+        return DB::transaction(function () use ($user, $attributes) {
+            $updateUser = $user->update([
+                'name'  => data_get($attributes, 'name', $user->name),
+                'email' => data_get($attributes, 'email', $user->email),
             ]);
+            throw_if(!$updateUser, GeneralJsonException::class, 'Failed to update user.');
+            event(new UserUpdated($user));
 
-            throw_if(!$updatePost, GeneralJsonException::class, 'Failed to update post.');
-
-            if ($userIds =  data_get($attributes, 'user_ids')) {
-                $post->users()->sync($userIds);
-            }
-
-            return $post;
+            return $user;
         });
     }
-    public function forceDelete($post)
+
+    /**
+     * @param User $user
+     * @return mixed
+     */
+    public function forceDelete($user)
     {
-        return DB::transaction(function () use ($post) {
-            $deletePost = $post->forceDelete();
+        return DB::transaction(function () use ($user) {
+            $deleteUser = $user->forceDelete();
 
-            throw_if(!$deletePost, GeneralJsonException::class, 'Failed to delete post.');
-
-            return $deletePost;
+            throw_if(!$deleteUser, GeneralJsonException::class, 'Cannot delete user.');
+            event(new UserDeleted($user));
+            return $deleteUser;
         });
     }
 }
