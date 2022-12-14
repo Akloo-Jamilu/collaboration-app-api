@@ -21,6 +21,6 @@ Route::get('/', function () {
 
 if (\Illuminate\Support\Facades\App::environment('local')) {
     Route::get('/playground', function () {
-        return (new \App\Mail\WelcomeMail())->render();
+        return (new \App\Mail\WelcomeMail(\App\Models\User::factory()->make()))->render();
     });
 }
