@@ -4,7 +4,7 @@ namespace App\Subscribers\Models;
 
 use App\Events\Models\User\UserCreated;
 use App\Listeners\SendWelcomeEmail;
-use Illuminate\Bus\Dispatcher;
+use Illuminate\Events\Dispatcher;
 
 class UserSubscriber
 {
