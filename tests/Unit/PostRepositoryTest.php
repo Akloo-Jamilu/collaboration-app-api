@@ -42,6 +42,7 @@ class PostRepositoryTest extends TestCase
         $repository = $this->app->make(PostRepository::class);
         $dummy = Post::factory(1)->make()->first();
 
+
         $repository->forceDelete($dummy);
     }
 
