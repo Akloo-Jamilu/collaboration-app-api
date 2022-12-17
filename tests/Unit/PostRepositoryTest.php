@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\GeneralJsonException;
 use App\Models\Post;
 use App\Repositories\PostRepository;
 use Tests\TestCase;
@@ -42,8 +43,8 @@ class PostRepositoryTest extends TestCase
         $repository = $this->app->make(PostRepository::class);
         $dummy = Post::factory(1)->make()->first();
 
-
-        $repository->forceDelete($dummy);
+        $this->expectException(GeneralJsonException::class);
+        $deleted = $repository->forceDelete($dummy);
     }
 
     public function test_delete()
