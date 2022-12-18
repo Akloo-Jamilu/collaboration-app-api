@@ -17,6 +17,7 @@ class PostApiTest extends TestCase
 
         $response->assertStatus(200);
         $data = $response->json('data');
+        // collect($data)->each(fn($post) => $this->assertTrue(in_array($post['id'], $postIds->toArray())));
         collect($data)->each(fn($post) => $this->assertTrue(in_array($post['id'], $postIds->toArray())));
     }
 }
