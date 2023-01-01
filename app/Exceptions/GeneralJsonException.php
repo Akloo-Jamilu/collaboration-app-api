@@ -25,6 +25,18 @@ class GeneralJsonException extends Exception
      *@param \Illuminate\Http\Request $request
      */
 
+	/**
+	*public function render($request)
+    	*{
+        *return new JsonResponse([
+         *   'errors' => [
+          *      'message' => $this->getMessage(),
+           * ]
+       * ], $this->code);
+   	* }
+	*/
+
+
     public function render($request)
     {
         return new JsonResponse([
